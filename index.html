@@ -17,6 +17,19 @@
     <input type="text" class="form-control" v-model="criterioDeBusqueda"
         placeholder="Ingresar un criterio de busqueda...">
     <br>
+    <input type="text" class="form-control" v-model="criterioDeBusqueda1"
+            placeholder="Ingresar un Nombre o Apellido a buscar...">
+            <br>
+   <input type="text" class="form-control" v-model="criterioDeBusqueda2"
+            placeholder="Ingresar un DNI.">
+    <br>
+    <div v-if="cantCaracteres >= 0 && cantCaracteres < 2" class="alert alert-danger">
+        <p > Ingrese {{3 - cantCaracteres}} caracteres para iniciar la busqueda</p>
+    </div>
+    <div v-else-if="cantCaracteres == 2" class="alert alert-danger">
+        <p > Ingrese {{3 - cantCaracteres}} caracter más para iniciar la busqueda</p>
+    </div>
+    <br>
     <div class="card-deck m-0">
         <div class="row">
             <div class="col" v-for="persona in personasFiltradas">
@@ -40,6 +53,8 @@
         el: '#app',
         data: {
             criterioDeBusqueda: '',
+            criterioDeBusqueda1: '',
+            criterioDeBusqueda2: '',
             //Aquí, en este array es donde tienen que agregar su información
             personas: [
                 {
@@ -49,21 +64,59 @@
                     dni: "20442873"
                 },
                 {
-                    nombre: "...",
-                    apellido: "...",
-                    correo: "...",
-                    dni: "..."
+                    nombre: "Gonzalo",
+                    apellido: "Migliore",
+                    correo: "gonzalomigliore@gmail.com",
+                    dni: "38812562"
+                },
+                {
+                    nombre: "Juan",
+                    apellido: "Lopez",
+                    correo: "juanLopez@gmail.com",
+                    dni: "38834123"
+                },
+                {
+                    nombre: "Pedro",
+                    apellido: "Gonzales",
+                    correo: "pedroGonzales@gmail.com",
+                    dni: "39098764"
+                },
+                {
+                    nombre: "Nicolas",
+                    apellido: "Lopez",
+                    correo: "nicoLopez@gmail.com",
+                    dni: "12312312"
+                },
+                {
+                    nombre: "Facundo",
+                    apellido: "Rodriguez",
+                    correo: "FacundoRodriguez@gmail.com",
+                    dni: "12312312"
                 },
             ]
 
         },
         computed: {
             personasFiltradas() {
+                if(this.criterioDeBusqueda.length < 3 && this.criterioDeBusqueda1.length < 3 && this.criterioDeBusqueda2.length < 3){
+                return this.personas
+                } else {
                 return this.personas.filter((persona) => {
                     let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
-                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
-                });
+                    let registroNombreYApellido =`${persona.nombre} ${persona.apellido}`                 
+                    let registroDNI =`${persona.dni}`                 
+                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase()) &&  registroNombreYApellido.toLowerCase().includes(this.criterioDeBusqueda1.toLowerCase())  &&  registroDNI.toLowerCase().includes(this.criterioDeBusqueda2.toLowerCase())
+                }); 
+            }},
+            cantCaracteres() {
+                let cant = this.criterioDeBusqueda.length
+                let cant1 = this.criterioDeBusqueda1.length
+                let cant2 = this.criterioDeBusqueda2.length
+
+                let cantMayor = Math.max(cant, cant1, cant2);
+                return cantMayor;
             }
+
         },
         methods: {
             getNombreCompleto(persona) {
